@@ -2,13 +2,14 @@ require('dotenv').config();
 
 import { Page } from 'puppeteer';
 import { Config } from './config';
+import { LOGIN_URL } from './const';
 import {
   BUTTON_SUBMIT_SELECTOR,
   EMAIL_BUTTON_SELECTOR,
   INPUT_EMAIL_SELECTOR,
-  INPUT_PASSWORD_SELECTOR, LOGIN_URL,
+  INPUT_PASSWORD_SELECTOR, TV_DOMAIN,
   SIGN_IN_SELECTOR, TOPPAGE_SIDEBAR_SELECTOR
-} from './selectors';
+} from './const';
 
 export class LoginPage {
   constructor(private page: Page) {
@@ -50,7 +51,7 @@ export class LoginPage {
 }
 
 export const login = async (page, config: Config) => {
-  await page.goto(LOGIN_URL, { waitUntil: 'domcontentloaded' });
+  await page.goto(TV_DOMAIN, { waitUntil: 'domcontentloaded' });
 
   await Promise.all([
     page.click(SIGN_IN_SELECTOR),

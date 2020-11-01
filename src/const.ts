@@ -1,6 +1,7 @@
 // URLs
-export const LOGIN_URL = 'https://jp.tradingview.com/';
-export const CHART_URL = 'https://jp.tradingview.com/chart';
+export const TV_DOMAIN = 'https://jp.tradingview.com';
+export const LOGIN_URL = `${TV_DOMAIN}/`;
+export const CHART_URL = `${TV_DOMAIN}/chart`;
 
 // Selectors
 
@@ -15,9 +16,7 @@ export const TOPPAGE_SIDEBAR_SELECTOR = 'div[class^="toolbar"]';
 
 export const CHART_PAGE_ALERT_SELECTOR = 'div[class^="widgetHeader"]';
 
-export const STRATEGY_ROW_SELECTOR = 'div[class^="sources-"]';
-export const STRATEGY_ROW_SELECTOR2 = 'div[data-name="legend-source-item"]';
+export const STRATEGY_ROW_SELECTOR = 'div[data-name="legend-source-item"]';
 
 export const STRATEGY_SETTING_BUTTON = 'div[data-name="legend-settings-action"]';
-
 export const SETTING_CONTENT_SELECTOR = 'div[data-name="indicator-properties-dialog"] > div[class^="content"]';
