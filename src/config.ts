@@ -22,7 +22,7 @@ const getEnvConfig = () => {
 };
 
 const getParameterConfig = () => {
-  const params = fs.readFileSync('./src/parameters.json', 'utf8');
+  const params = fs.readFileSync('./parameters.json', 'utf8');
 
   return JSON.parse(params);
 };
