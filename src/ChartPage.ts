@@ -80,15 +80,11 @@ export class ChartPage extends AbstractPage {
 
   private async parseResult() {
     return {
-      totalProfit: await this.getValue('div > div.report-data > div:nth-child(1) > p > span'),
-      tradeCount: await this.getValue('div > div.report-data > div:nth-child(2) > strong'),
-      drawDown: await this.getValue('div > div.report-data > div:nth-child(5) > p > span > span'),
-      profitFactor: await this.getValue('div > div.report-data > div:nth-child(4) > strong'),
+      totalProfit: await this.getNumberValue('div > div.report-data > div:nth-child(1) > p > span'),
+      tradeCount: await this.getNumberValue('div > div.report-data > div:nth-child(2) > strong'),
+      drawDown: await this.getNumberValue('div > div.report-data > div:nth-child(5) > p > span > span'),
+      profitFactor: await this.getNumberValue('div > div.report-data > div:nth-child(4) > strong'),
     };
-  }
-
-  private async getValue(selector: string) {
-    return _.toNumber(_.trim(await (await (await this.page.$(selector)).getProperty('textContent')).jsonValue(), '% '));
   }
 
   async waitForUpdateResult() {
@@ -96,5 +92,9 @@ export class ChartPage extends AbstractPage {
       this.page.waitFor(3000),
       this.page.waitFor(100000),
     ]);
+  }
+
+  async getNumberValue(selector: string): Promise<number> {
+    return _.toNumber(_.trim(await this.getValue(selector), '% '));
   }
 }
