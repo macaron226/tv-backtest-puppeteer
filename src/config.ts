@@ -1,12 +1,13 @@
+const fs = require('fs');
 import * as _ from 'lodash';
 
-const parameters: { [P in keyof Config]: string } = {
+const parameters: { [P in keyof any]: string } = {
   email: 'TV_EMAIL',
   password: 'TV_PASSWORD',
   chartPath: 'TV_CHART_PATH',
 };
 
-export const getConfig: () => Readonly<Config> = () => {
+const getEnvConfig = () => {
   const envParams = process.env;
 
   const config = _.reduce(parameters, (carry, envKey, key) => {
@@ -20,10 +21,21 @@ export const getConfig: () => Readonly<Config> = () => {
   return Object.freeze(config);
 };
 
+const getParameterConfig = () => {
+  const params = fs.readFileSync('./src/parameters.json', 'utf8');
+
+  return JSON.parse(params);
+};
+
+export const getConfig: () => Readonly<Config> = () => {
+  return {...getEnvConfig(), ...getParameterConfig()};
+};
+
 export type Config = {
   email: string,
   password: string,
   chartPath: string,
+  indicator: object,
 };
 
 // interface Config {
