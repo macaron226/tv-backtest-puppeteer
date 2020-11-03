@@ -1,11 +1,12 @@
 import puppeteer from 'puppeteer';
 import { ChartPage } from './ChartPage';
-import { getConfig } from './config';
+import { getConfig, getStrategyConfig, Parameter, Parameters } from './config';
 import { LoginPage } from './LoginPage';
 
 require('dotenv').config();
 
 import * as _ from 'lodash';
+import { getParamCombination } from './util';
 
 (async () => {
   const config = getConfig();
@@ -17,38 +18,23 @@ import * as _ from 'lodash';
 
   // ログイン
   const loginPage = new LoginPage(page);
-  await loginPage.open();
-  await loginPage.clickEmailLogin();
-  await loginPage.typeEmail(config.email);
-  await loginPage.typePassword(config.password);
-  await loginPage.clickLoginButton();
+  await loginPage.login(config.email, config.password);
 
   // チャートページへ遷移
-  const chartPage = new ChartPage(page, config.chartPath);
-  await chartPage.open();
-  await chartPage.clickStrategyTesterTabIfNonActive();
-  await chartPage.clickStrategySetting();
-  await chartPage.getDialogContentDom();
+  const { chart, parameters } = getStrategyConfig();
+  const chartPage = new ChartPage(page, chart.path);
+  await chartPage.openStrategySetting();
 
   // await chartPage.inputToParameter(6, 123);
-  const { indicator } = config;
 
-  const indicators = _.map(indicator, (param, indexStr: string) => {
-    return {
-      index: _.toNumber(indexStr),
-      ...param,
-    };
-  });
+  const paramCombination = _.map(getParamCombination(parameters), (row: { [index: string]: number }) => {
+    return _.reduce(row, (carry, value) => ({ ...carry, ...value }), {});
+  }, []);
 
-  for (const item of indicators) {
-    const values = _.range(item.min, item.max + 1);
-    console.log('values');
-    console.log(values);
-
-    for (const value of values) {
-      await chartPage.inputToParameter(item.index, _.toString(value));
+  for (const params of paramCombination) {
+    await chartPage.inputToParameters(params);
+      // await chartPage.inputToParameter(item.index, _.toString(value));
     }
-  }
 
 // SS
 // https://knooto.info/puppeteer-page-screenshot-after-login/

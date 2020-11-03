@@ -12,6 +12,14 @@ const TOPPAGE_SIDEBAR_SELECTOR = 'div[class^="toolbar"]';
 export class LoginPage extends AbstractPage {
   protected path = '/#signin';
 
+  async login(email: string, password: string) {
+    await this.open();
+    await this.clickEmailLogin();
+    await this.typeEmail(email);
+    await this.typePassword(password);
+    await this.clickLoginButton();
+  }
+
   async open(): Promise<void> {
     await Promise.all([
       this.page.goto(this.getUrl(), { waitUntil: 'domcontentloaded' }),
@@ -19,22 +27,22 @@ export class LoginPage extends AbstractPage {
     ]);
   }
 
-  async clickEmailLogin(): Promise<void> {
+  private async clickEmailLogin(): Promise<void> {
     await Promise.all([
       this.page.click(EMAIL_BUTTON_SELECTOR),
       this.page.waitForSelector(INPUT_EMAIL_SELECTOR),
     ]);
   }
 
-  async typeEmail(email: string): Promise<void> {
+  private async typeEmail(email: string): Promise<void> {
     await this.page.type(INPUT_EMAIL_SELECTOR, email);
   }
 
-  async typePassword(password: string): Promise<void> {
+  private async typePassword(password: string): Promise<void> {
     await this.page.type(INPUT_PASSWORD_SELECTOR, password); // パスワード入力
   }
 
-  async clickLoginButton(): Promise<void> {
+  private async clickLoginButton(): Promise<void> {
     await Promise.all([
       this.page.click(BUTTON_SUBMIT_SELECTOR),
       this.page.waitForSelector(TOPPAGE_SIDEBAR_SELECTOR),
