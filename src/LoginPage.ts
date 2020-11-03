@@ -1,30 +1,20 @@
 require('dotenv').config();
 
-import { Page } from 'puppeteer';
-import { Config } from './config';
-import { LOGIN_URL } from './const';
-import {
-  BUTTON_SUBMIT_SELECTOR,
-  EMAIL_BUTTON_SELECTOR,
-  INPUT_EMAIL_SELECTOR,
-  INPUT_PASSWORD_SELECTOR, TV_DOMAIN,
-  SIGN_IN_SELECTOR, TOPPAGE_SIDEBAR_SELECTOR
-} from './const';
+import { AbstractPage } from './Page';
 
-export class LoginPage {
-  constructor(private page: Page) {
-  }
+const EMAIL_BUTTON_SELECTOR = 'span.tv-signin-dialog__toggle-email';
+const INPUT_EMAIL_SELECTOR = 'input[id^="email-signin__user-name-input"]';
+const INPUT_PASSWORD_SELECTOR = 'input[id^="email-signin__password-input"]';
+const BUTTON_SUBMIT_SELECTOR = 'button[id^="email-signin__submit-button"]';
+// top
+const TOPPAGE_SIDEBAR_SELECTOR = 'div[class^="toolbar"]';
 
-  async setup(): Promise<void> {
+export class LoginPage extends AbstractPage {
+  protected path = '/#signin';
+
+  async open(): Promise<void> {
     await Promise.all([
-      this.page.goto(LOGIN_URL, { waitUntil: 'domcontentloaded' }),
-      this.page.waitForSelector(EMAIL_BUTTON_SELECTOR),
-    ]);
-  }
-
-  async clickSignin(): Promise<void> {
-    await Promise.all([
-      this.page.click(SIGN_IN_SELECTOR),
+      this.page.goto(this.getUrl(), { waitUntil: 'domcontentloaded' }),
       this.page.waitForSelector(EMAIL_BUTTON_SELECTOR),
     ]);
   }
@@ -38,7 +28,6 @@ export class LoginPage {
 
   async typeEmail(email: string): Promise<void> {
     await this.page.type(INPUT_EMAIL_SELECTOR, email);
-    // await this.blur();
   }
 
   async typePassword(password: string): Promise<void> {

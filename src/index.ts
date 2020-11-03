@@ -1,7 +1,6 @@
 import puppeteer from 'puppeteer';
 import { ChartPage } from './ChartPage';
 import { getConfig } from './config';
-import { TV_DOMAIN } from './const';
 import { LoginPage } from './LoginPage';
 
 require('dotenv').config();
@@ -14,23 +13,19 @@ import * as _ from 'lodash';
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
 
-  await page.setViewport({ width: 1080, height: 825 });
+  await page.setViewport({ width: 1080, height: 1080 });
 
   // ログイン
   const loginPage = new LoginPage(page);
-  await loginPage.setup();
+  await loginPage.open();
   await loginPage.clickEmailLogin();
   await loginPage.typeEmail(config.email);
   await loginPage.typePassword(config.password);
   await loginPage.clickLoginButton();
 
-
-  //blur
-  // await page.$eval('input[name=email]', e => e.blur());
-
   // チャートページへ遷移
-  const chartPage = new ChartPage(page);
-  await chartPage.gotoChartPage(config.chartPath);
+  const chartPage = new ChartPage(page, config.chartPath);
+  await chartPage.open();
   await chartPage.clickStrategyTesterTabIfNonActive();
   await chartPage.clickStrategySetting();
   await chartPage.getDialogContentDom();
@@ -54,15 +49,6 @@ import * as _ from 'lodash';
       await chartPage.inputToParameter(item.index, _.toString(value));
     }
   }
-  // await chartPage.getDialogContentDom();
-  //
-  // // 指定されたラベルのinputを取得する
-  //
-  // await page.evaluate(selector => {
-  //
-  // });
-  //
-  // await page.waitFor(1000000);
 
 // SS
 // https://knooto.info/puppeteer-page-screenshot-after-login/
