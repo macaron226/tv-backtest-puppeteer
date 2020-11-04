@@ -1,7 +1,7 @@
 import { ElementHandle, Page } from 'puppeteer';
 import * as _ from 'lodash';
 import { AbstractPage } from './Page';
-import { ParameterColumn } from './types';
+import { BacktestResult, ParameterColumn } from './types';
 
 const CHART_PAGE_ALERT_SELECTOR = 'div[class^="widgetHeader"]';
 
@@ -17,6 +17,9 @@ const ANY_PARAM_INPUT_SELECTOR = 'input[class^="innerInput-"]';
 export class ChartPage extends AbstractPage {
   protected path = '/chart';
   private indicatorInputs: ElementHandle[] = [];
+
+  // 変わってたら結果更新とする
+  private resultCache = '';
 
   constructor(protected page: Page, private chartPath: string) {
     super(page);
@@ -59,11 +62,12 @@ export class ChartPage extends AbstractPage {
   }
 
   // 全てのパラメータに数字を入力
-  async inputToParameters(params: { [key: string]: number }[]) {
-    console.log(params);
+  async getResultByParameters(params: { [key: string]: number }[]): Promise<BacktestResult> {
     for (const [index, value] of Object.entries(params)) {
       await this.inputToParameter(index, _.toString(value));
     }
+
+    this.resultCache = await this.getValue('div > div.report-data > div:nth-child(1) > p > span');
 
     // blurして結果更新
     await Promise.all([
@@ -71,8 +75,7 @@ export class ChartPage extends AbstractPage {
       this.waitForUpdateResult(),
     ]);
 
-    const result = await this.parseResult();
-    console.log(result);
+    return await this.parseResult();
   }
 
   // index番目のパラメータに数字を入力
@@ -88,7 +91,7 @@ export class ChartPage extends AbstractPage {
     await input.type(value);
   }
 
-  private async parseResult() {
+  private async parseResult(): Promise<BacktestResult> {
     return {
       totalProfit: await this.getNumberValue('div > div.report-data > div:nth-child(1) > p > span'),
       tradeCount: await this.getNumberValue('div > div.report-data > div:nth-child(2) > strong'),
@@ -97,11 +100,38 @@ export class ChartPage extends AbstractPage {
     };
   }
 
+  // https://stackoverflow.com/questions/54109078/puppeteer-wait-for-page-dom-updates-respond-to-new-items-that-are-added-after
+
   async waitForUpdateResult() {
     await Promise.race([
-      this.page.waitFor(3000),
-      this.page.waitFor(100000),
+      // this.waitForUpdateRender(),
+      this.page.waitFor(2000),
     ]);
+  }
+
+  // https://github.com/puppeteer/puppeteer/issues/2945
+
+  async waitForUpdateRender() {
+    // this.page.waitForFunction(async selector => {
+    //   return this.resultCache != await this.getValue('div > div.report-data > div:nth-child(1) > p > span');
+    // }, {}, 'div > div.report-data > div:nth-child(1) > p > span'),
+
+    // await this.page.exposeFunction('getItem', function(a) {
+    //     console.log(a);
+    // });
+
+    await this.page.evaluate(() => {
+      const result = document.querySelector('div > div.report-data > div:nth-child(1) > p > span');
+      // console.log(result);
+        // var observer = new MutationObserver((mutations) => {
+        //     for(var mutation of mutations) {
+        //         if(mutation.addedNodes.length) {
+        //             getItem(mutation.addedNodes[0].innerText);
+        //         }
+        //     }
+        // });
+        // observer.observe(document.getElementById("chat"), { attributes: false, childList: true, subtree: true });
+    });
   }
 
   async getNumberValue(selector: string): Promise<number> {

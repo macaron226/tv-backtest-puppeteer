@@ -6,6 +6,7 @@ import { LoginPage } from './LoginPage';
 require('dotenv').config();
 
 import * as _ from 'lodash';
+import { BacktestResult } from './types';
 import { getParamCombination } from './util';
 
 (async () => {
@@ -31,10 +32,19 @@ import { getParamCombination } from './util';
     return _.reduce(row, (carry, value) => ({ ...carry, ...value }), {});
   }, []);
 
+  let greatestResult: BacktestResult;
   for (const params of paramCombination) {
-    await chartPage.inputToParameters(params);
-      // await chartPage.inputToParameter(item.index, _.toString(value));
+    const result = await chartPage.getResultByParameters(params);
+    if (!greatestResult || result.profitFactor > greatestResult.profitFactor) {
+      greatestResult = result;
+      console.log('params');
+      console.log(params);
+      console.log(greatestResult);
     }
+  }
+
+  console.log('greatestResult');
+  console.log(greatestResult);
 
 // SS
 // https://knooto.info/puppeteer-page-screenshot-after-login/
