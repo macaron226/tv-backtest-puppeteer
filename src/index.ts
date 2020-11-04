@@ -10,8 +10,6 @@ import { BacktestResult } from './types';
 import { getParamCombination } from './util';
 
 (async () => {
-  const config = getConfig();
-
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
 
