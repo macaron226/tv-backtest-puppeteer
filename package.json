@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "tslint ./src/**/*.ts",
     "fix": "tslint --fix ./src/**/*.ts",
-    "start": "ts-node src/index.ts",
+    "start": "ts-node src/scripts/index.ts",
     "starttest": "ts-node src/test.ts"
   },
   "pre-commit": [

@@ -1,13 +1,13 @@
 import puppeteer from 'puppeteer';
-import { ChartPage } from './ChartPage';
-import { getConfig, getStrategyConfig, Parameter, Parameters } from './config';
-import { LoginPage } from './LoginPage';
+import { ChartPage } from '../pages/ChartPage';
+import { getConfig, getStrategyConfig, Parameter, Parameters } from '../config';
+import { LoginPage } from '../pages/LoginPage';
 
 require('dotenv').config();
 
 import * as _ from 'lodash';
-import { BacktestResult } from './types';
-import { getParamCombination } from './util';
+import { BacktestResult } from '../types';
+import { getParamCombination } from '../util';
 
 (async () => {
   const config = getConfig();

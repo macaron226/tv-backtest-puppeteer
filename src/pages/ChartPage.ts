@@ -1,7 +1,7 @@
 import { ElementHandle, Page } from 'puppeteer';
 import * as _ from 'lodash';
 import { AbstractPage } from './Page';
-import { BacktestResult, ParameterColumn } from './types';
+import { BacktestResult, ParameterColumn } from '../types';
 
 const CHART_PAGE_ALERT_SELECTOR = 'div[class^="widgetHeader"]';
 
