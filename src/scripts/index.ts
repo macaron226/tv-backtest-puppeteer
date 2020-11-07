@@ -33,6 +33,7 @@ import { getParamCombination } from '../util';
   }, []);
 
   let greatestResult: BacktestResult;
+
   for (const params of paramCombination) {
     const result = await chartPage.getResultByParameters(params);
     if (!greatestResult || result.profitFactor > greatestResult.profitFactor) {
@@ -43,6 +44,7 @@ import { getParamCombination } from '../util';
     }
   }
 
+  console.log('-------- fin --------');
   console.log('greatestResult');
   console.log(greatestResult);
 
