@@ -10,7 +10,7 @@ const STRATEGY_TESTER_TITLE_SELECTOR = 'div.backtesting-head-wrapper';
 
 const STRATEGY_SETTING_BUTTON = 'div.js-backtesting-open-format-dialog'; // 設定ボタン
 const SETTING_CONTENT_SELECTOR = 'div[data-name="indicator-properties-dialog"] div[class^="content"]'; // 設定画面
-const SETTING_CELLS_SELECTOR = `${ SETTING_CONTENT_SELECTOR } > *`; // 設定項目
+const SETTING_CELLS_SELECTOR = `${ SETTING_CONTENT_SELECTOR } > div[class*="last-"]`; // 設定項目
 
 const ANY_PARAM_INPUT_SELECTOR = 'input[class^="innerInput-"]';
 
@@ -55,10 +55,8 @@ export class ChartPage extends AbstractPage {
       this.page.waitForSelector(SETTING_CONTENT_SELECTOR)
     ]);
 
-    // 項目を取得しておく
-    const rows: ElementHandle[] = await this.page.$$(SETTING_CELLS_SELECTOR);
-    // 奇数番目のみにする（input）
-    this.indicatorInputs = _.filter(rows, (row, i) => i % 2 === 1);
+    // 入力項目を取得しておく
+    this.indicatorInputs = await this.page.$$(SETTING_CELLS_SELECTOR);
   }
 
   // 全てのパラメータに数字を入力
@@ -92,6 +90,11 @@ export class ChartPage extends AbstractPage {
   }
 
   private async parseResult(): Promise<BacktestResult> {
+    const reportData = await this.page.$('div > div.report-data');
+    if (!reportData) {
+      return { totalProfit: 0, tradeCount: 0, drawDown: 0, profitFactor: 0 };
+    }
+
     return {
       totalProfit: await this.getNumberValue('div > div.report-data > div:nth-child(1) > p > span'),
       tradeCount: await this.getNumberValue('div > div.report-data > div:nth-child(2) > strong'),
@@ -135,6 +138,7 @@ export class ChartPage extends AbstractPage {
   }
 
   async getNumberValue(selector: string): Promise<number> {
-    return _.toNumber(_.trim(await this.getValue(selector), '% '));
+    const value = await this.getValue(selector);
+    return value ? _.toNumber(_.trim(value, '% ')) : 0;
   }
 }

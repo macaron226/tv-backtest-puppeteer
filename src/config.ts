@@ -25,6 +25,9 @@ const getEnvConfig = () => {
 export const getStrategyConfig: () => StrategyConfig = () => {
   const strategy = process.env.PARAMETER_FILE;
   const params = fs.readFileSync(`./strategies/${ strategy }.json`, 'utf8');
+  if (!params || params == '') {
+    throw new Error('ファイル読み込みエラー');
+  }
 
   return JSON.parse(params);
 };
@@ -44,7 +47,7 @@ export type StrategyConfig = {
   chart: {
     path: string,
   },
-  parameters: Parameters,
+  indicator: Parameters,
 }
 export type Parameters = {
   [index: string]: ParameterRange,

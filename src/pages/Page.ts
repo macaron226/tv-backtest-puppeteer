@@ -16,10 +16,13 @@ export abstract class AbstractPage {
   }
 
   protected async getValue(selector: string): Promise<string> {
+    const element = await this.page.$(selector);
+    if (!element) {
+      return null;
+    }
+
     return await (
-      await (
-        await this.page.$(selector)
-      ).getProperty('textContent')
+      await element.getProperty('textContent')
     ).jsonValue();
   }
 }

@@ -22,13 +22,13 @@ import { getParamCombination } from '../util';
   await loginPage.login(config.email, config.password);
 
   // チャートページへ遷移
-  const { chart, parameters } = getStrategyConfig();
+  const { chart, indicator } = getStrategyConfig();
   const chartPage = new ChartPage(page, chart.path);
   await chartPage.openStrategySetting();
 
   // await chartPage.inputToParameter(6, 123);
 
-  const paramCombination = _.map(getParamCombination(parameters), (row: { [index: string]: number }) => {
+  const paramCombination = _.map(getParamCombination(indicator), (row: { [index: string]: number }) => {
     return _.reduce(row, (carry, value) => ({ ...carry, ...value }), {});
   }, []);
 
