@@ -23,13 +23,23 @@ const getEnvConfig = () => {
 };
 
 export const getStrategyConfig: () => StrategyConfig = () => {
-  const strategy = process.env.PARAMETER_FILE;
-  const params = fs.readFileSync(`./strategies/${ strategy }.json`, 'utf8');
-  if (!params || params == '') {
+  try {
+    const params = fs.readFileSync(`./strategies.json`, 'utf8');
+    const strategy = _.get(JSON.parse(params), process.env.STRATEGY);
+
+    if (!strategy || !strategy.chart || !strategy.parameters) {
+      throw new Error(`strategyの形式が不正です: ${ process.env.STRATEGY }`);
+    }
+
+    return {
+      chart: strategy.chart,
+      parameters: strategy.parameters,
+    };
+
+  } catch (e) {
+    console.log(e);
     throw new Error('ファイル読み込みエラー');
   }
-
-  return JSON.parse(params);
 };
 
 export const getConfig: () => Readonly<Config> = () => {
@@ -44,10 +54,8 @@ export type Config = {
 };
 
 export type StrategyConfig = {
-  chart: {
-    path: string,
-  },
-  indicator: Parameters,
+  chart: string,
+  parameters: Parameters,
 }
 export type Parameters = {
   [index: string]: ParameterRange,
