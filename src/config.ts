@@ -33,7 +33,7 @@ export const getStrategyConfig: () => StrategyConfig = () => {
 
     return {
       chart: strategy.chart,
-      parameters: strategy.parameters,
+      parameterDefs: strategy.parameters,
     };
 
   } catch (e) {
@@ -55,9 +55,9 @@ export type Config = {
 
 export type StrategyConfig = {
   chart: string,
-  parameters: Parameters,
+  parameterDefs: ParameterDefs,
 }
-export type Parameters = {
+export type ParameterDefs = {
   [index: string]: ParameterRange,
 }
 

@@ -14,3 +14,7 @@ export type BacktestResult = {
   drawDown: number;
   profitFactor: number;
 }
+
+export type Solution = {
+  [index: string]: number;
+}

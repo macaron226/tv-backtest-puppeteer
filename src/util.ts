@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Parameters } from './config';
+import { ParameterDefs } from './config';
 import { ParameterColumn, ParameterRange } from './types';
 
 // 各行の配列の組み合わせを取得します
@@ -18,7 +18,7 @@ export function permutation<T>(input: T[][]): T[][] {
   return result;
 }
 
-export const getParamCombination: (param: Parameters) => ParameterColumn[][] = (params: Parameters) => {
+export const getParamCombination: (param: ParameterDefs) => ParameterColumn[][] = (params: ParameterDefs) => {
   const input = _.map(params, (param: ParameterRange, index: string) => {
     const range = _.range(param.min, param.max + 1);
     return range.map(num => ({ [index]: num }));

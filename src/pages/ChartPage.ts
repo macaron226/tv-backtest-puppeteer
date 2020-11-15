@@ -60,13 +60,14 @@ export class ChartPage extends AbstractPage {
   }
 
   // 全てのパラメータに数字を入力し、結果を取得する
-  async getResultByParameters(params: { [key: string]: number }[]): Promise<BacktestResult> {
+  async getResultByParameters(params: { [key: string]: number }): Promise<BacktestResult> {
     // 同時アクセス可能なデバイス数のお知らせがでたら閉じる
     if (await this.page.$('[data-dialog-name="gopro"]')) {
       await this.page.click('button.close-button');
       await this.page.waitFor(2000);
     }
 
+    console.log(params);
     for (const [index, value] of Object.entries(params)) {
       await this.inputToParameter(index, _.toString(value));
     }

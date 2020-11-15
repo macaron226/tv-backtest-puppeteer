@@ -10,6 +10,8 @@
     "lint": "tslint ./src/**/*.ts",
     "fix": "tslint --fix ./src/**/*.ts",
     "start": "ts-node src/scripts/index.ts",
+    "start:headless": "ts-node src/scripts/index.ts true",
+    "start:genetic": "ts-node src/scripts/startGenetic.ts",
     "starttest": "ts-node src/test.ts"
   },
   "pre-commit": [
@@ -28,6 +30,7 @@
     "typescript": "^3.5.3"
   },
   "dependencies": {
+    "async-genetic": "^1.1.1",
     "dotenv": "^8.2.0",
     "genetic": "^0.3.1",
     "lodash": "^4.17.20",
