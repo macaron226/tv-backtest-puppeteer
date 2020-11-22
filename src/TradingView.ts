@@ -17,7 +17,7 @@ export class TradingView {
   }
 
   async openChartPageSettings(chartPath: string): Promise<void> {
-    const browser = await puppeteer.launch({ headless: this.isHeadless });
+    let browser = await puppeteer.launch({ headless: this.isHeadless });
     this.page = await browser.newPage();
 
     await this.page.setViewport({ width: 1580, height: 1080 });
@@ -25,7 +25,10 @@ export class TradingView {
     // ログイン
     const loginPage = new LoginPage(this.page);
     await loginPage.login(this.config.email, this.config.password);
+    // await browser.close();
 
+    // browser = await puppeteer.launch({ headless: this.isHeadless });
+    // this.page = await browser.newPage();
     // チャートページへ遷移
     this.chartPage = new ChartPage(this.page, chartPath);
     await this.chartPage.openStrategySetting();

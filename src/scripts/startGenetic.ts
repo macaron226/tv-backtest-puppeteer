@@ -8,7 +8,8 @@
   const tv = new TradingView();
   await tv.openChartPageSettings(chart);
 
-  const genetic = new Genetic(parameterDefs, tv.getBacktestResult);
-  genetic.run();
+  // const genetic = new Genetic(parameterDefs, tv.getBacktestResult);
+  const genetic = new Genetic(tv.getBacktestResult, parameterDefs);
+  await genetic.solve();
   // console.log(5);
 })();
